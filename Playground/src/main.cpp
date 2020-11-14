@@ -28,7 +28,7 @@ int32_t leftMotorPct;
 int32_t rightMotorPct;
 int32_t MAX_FORWARD = 80.0;
 double MAX_TURN = 90.0;
-double TURN_K = 0.888;
+double TURN_K = 0.7;
 double preOrientation;
 double targetOrientation;
 bool isTurning = false;
@@ -52,13 +52,13 @@ void usercontrol(void) {
     rightMotorPct = leftMotorPct;
 
     if (abs(Controller1.Axis1.position(percent)) > 1 && !isTurning) {
-      preOrientation = Inertial.orientation(yaw, degrees);
+      preOrientation = Inertial.rotation(degrees);
       isTurning = true;
     }
     if (isTurning) {
       targetOrientation = preOrientation + Controller1.Axis1.position(percent) / 100.0 * MAX_TURN;
-      leftMotorPct += round((targetOrientation - Inertial.orientation(yaw, degrees)) * TURN_K);
-      rightMotorPct -= round((targetOrientation - Inertial.orientation(yaw, degrees)) * TURN_K);
+      leftMotorPct += round((targetOrientation - Inertial.rotation(degrees)) * TURN_K);
+      rightMotorPct -= round((targetOrientation - Inertial.rotation(degrees)) * TURN_K);
     }
     if (abs(Controller1.Axis1.position(percent)) <= 1) {
       isTurning = false;
