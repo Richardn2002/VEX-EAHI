@@ -21,7 +21,6 @@
 #include "vex.h"
 
 using namespace vex;
-brain Brain;
 timer Timer;
 competition Competition;
 
@@ -54,6 +53,7 @@ void usercontrol(void) {
     Brain.Screen.print("Pitch: ", Inertial.orientation(pitch, degrees));
     Brain.Screen.setCursor(3,0);
     Brain.Screen.print("Yaw: ", Inertial.orientation(yaw, degrees));
+    wait(100, msec);
   }
 }
 
