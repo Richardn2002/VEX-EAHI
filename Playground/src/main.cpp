@@ -57,8 +57,8 @@ void usercontrol(void) {
     }
     if (isTurning) {
       targetOrientation = preOrientation + Controller1.Axis1.position(percent) / 100.0 * MAX_TURN;
-      leftMotorPct -= round((targetOrientation - Inertial.orientation(yaw, degrees)) * TURN_K);
-      rightMotorPct += round((targetOrientation - Inertial.orientation(yaw, degrees)) * TURN_K);
+      leftMotorPct += round((targetOrientation - Inertial.orientation(yaw, degrees)) * TURN_K);
+      rightMotorPct -= round((targetOrientation - Inertial.orientation(yaw, degrees)) * TURN_K);
     }
     if (abs(Controller1.Axis1.position(percent)) <= 1) {
       isTurning = false;
