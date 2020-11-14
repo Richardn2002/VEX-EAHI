@@ -24,6 +24,15 @@ using namespace vex;
 timer Timer;
 competition Competition;
 
+int32_t leftMotorPct;
+int32_t rightMotorPct;
+int32_t MAX_FORWARD = 80.0;
+double MAX_TURN = 90.0;
+double TURN_K = 0.888;
+double preOrientation;
+double targetOrientation;
+bool isTurning = false;
+
 void autonomous(void) {
   while(1) {
   }
@@ -39,20 +48,26 @@ void usercontrol(void) {
   Brain.Screen.clearLine(4, color::black);
 
   while(1) {
-    MotorFL.spin(directionType::fwd, Controller1.Axis3.position(percent), velocityUnits::pct);
-    MotorBL.spin(directionType::fwd, Controller1.Axis3.position(percent), velocityUnits::pct);
-    MotorFR.spin(directionType::fwd, Controller1.Axis2.position(percent), velocityUnits::pct);
-    MotorBR.spin(directionType::fwd, Controller1.Axis2.position(percent), velocityUnits::pct);
+    leftMotorPct = round(Controller1.Axis3.position(percent) * MAX_FORWARD / 100.0);
+    rightMotorPct = leftMotorPct;
 
-    Brain.Screen.clearLine(1, color::black);
-    Brain.Screen.clearLine(2, color::black);
-    Brain.Screen.clearLine(3, color::black);
-    Brain.Screen.setCursor(1,0);
-    Brain.Screen.print(Inertial.orientation(roll, degrees));
-    Brain.Screen.setCursor(2,0);
-    Brain.Screen.print(Inertial.orientation(pitch, degrees));
-    Brain.Screen.setCursor(3,0);
-    Brain.Screen.print(Inertial.orientation(yaw, degrees));
+    if (abs(Controller1.Axis1.position(percent)) > 1 && !isTurning) {
+      preOrientation = Inertial.orientation(yaw, degrees);
+      isTurning = true;
+    }
+    if (isTurning) {
+      targetOrientation = preOrientation + Controller1.Axis1.position(percent) / 100.0 * MAX_TURN;
+      leftMotorPct -= round((targetOrientation - Inertial.orientation(yaw, degrees)) * TURN_K);
+      rightMotorPct += round((targetOrientation - Inertial.orientation(yaw, degrees)) * TURN_K);
+    }
+    if (abs(Controller1.Axis1.position(percent)) <= 1) {
+      isTurning = false;
+    }
+
+    MotorFL.spin(directionType::fwd, leftMotorPct, velocityUnits::pct);
+    MotorBL.spin(directionType::fwd, leftMotorPct, velocityUnits::pct);
+    MotorFR.spin(directionType::fwd, rightMotorPct, velocityUnits::pct);
+    MotorBR.spin(directionType::fwd, rightMotorPct, velocityUnits::pct);
     wait(100, msec);
   }
 }
