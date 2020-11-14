@@ -48,11 +48,11 @@ void usercontrol(void) {
     Brain.Screen.clearLine(2, color::black);
     Brain.Screen.clearLine(3, color::black);
     Brain.Screen.setCursor(1,0);
-    Brain.Screen.print("Roll: ", Inertial.orientation(roll, degrees));
+    Brain.Screen.print(Inertial.orientation(roll, degrees));
     Brain.Screen.setCursor(2,0);
-    Brain.Screen.print("Pitch: ", Inertial.orientation(pitch, degrees));
+    Brain.Screen.print(Inertial.orientation(pitch, degrees));
     Brain.Screen.setCursor(3,0);
-    Brain.Screen.print("Yaw: ", Inertial.orientation(yaw, degrees));
+    Brain.Screen.print(Inertial.orientation(yaw, degrees));
     wait(100, msec);
   }
 }
