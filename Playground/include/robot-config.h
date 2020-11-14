@@ -8,6 +8,7 @@ extern controller Controller1;
 extern motor MotorBL;
 extern motor MotorFR;
 extern motor MotorBR;
+extern inertial Inertial;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.
