@@ -72,12 +72,25 @@ void usercontrol(void) {
   }
 }
 
+void turnBack(void) {
+  preOrientation = Inertial.rotation(degrees);
+  targetOrientation = preOrientation + 180.0;
+  while (abs(Inertial.rotation(degrees) - targetOrientation) > 5.0) {
+    MotorFL.spin(directionType::fwd, round((targetOrientation - Inertial.rotation(degrees)) * TURN_K), velocityUnits::pct);
+    MotorBL.spin(directionType::fwd, round((targetOrientation - Inertial.rotation(degrees)) * TURN_K), velocityUnits::pct);
+    MotorFR.spin(directionType::fwd, -round((targetOrientation - Inertial.rotation(degrees)) * TURN_K), velocityUnits::pct);
+    MotorBR.spin(directionType::fwd, -round((targetOrientation - Inertial.rotation(degrees)) * TURN_K), velocityUnits::pct);
+    wait(100, msec);
+  }
+}
+
 int main() {
   // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
   
   Competition.autonomous(autonomous);
   Competition.drivercontrol(usercontrol);
+  Controller1.ButtonDown.pressed(turnBack);
 
   while(1) {
     wait(100, msec);
