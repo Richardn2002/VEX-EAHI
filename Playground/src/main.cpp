@@ -32,6 +32,7 @@ double TURN_K = 0.7;
 double preOrientation;
 double targetOrientation;
 bool isTurning = false;
+bool isTurningBack = false;
 
 void autonomous(void) {
   while(1) {
@@ -51,17 +52,35 @@ void usercontrol(void) {
     leftMotorPct = round(Controller1.Axis3.position(percent) * MAX_FORWARD / 100.0);
     rightMotorPct = leftMotorPct;
 
+    if (Controller1.ButtonDown.pressing() && !isTurning) {
+      preOrientation = Inertial.rotation(degrees);
+      isTurning = true;
+      isTurningBack = true;
+    }
     if (abs(Controller1.Axis1.position(percent)) > 1 && !isTurning) {
       preOrientation = Inertial.rotation(degrees);
       isTurning = true;
     }
+
     if (isTurning) {
-      targetOrientation = preOrientation + Controller1.Axis1.position(percent) / 100.0 * MAX_TURN;
+      if (isTurningBack) {
+        targetOrientation = preOrientation + 180.0;
+      } else {
+        targetOrientation = preOrientation + Controller1.Axis1.position(percent) / 100.0 * MAX_TURN;
+      }
       leftMotorPct += round((targetOrientation - Inertial.rotation(degrees)) * TURN_K);
       rightMotorPct -= round((targetOrientation - Inertial.rotation(degrees)) * TURN_K);
     }
-    if (abs(Controller1.Axis1.position(percent)) <= 1) {
-      isTurning = false;
+
+    if (isTurningBack) {
+      if (abs(targetOrientation - Inertial.rotation(degrees)) < 5.0) {
+        isTurning = false;
+        isTurningBack = false;
+      }
+    } else {
+      if (abs(Controller1.Axis1.position(percent)) <= 1) {
+        isTurning = false;
+      }
     }
 
     MotorFL.spin(directionType::fwd, leftMotorPct, velocityUnits::pct);
@@ -72,25 +91,12 @@ void usercontrol(void) {
   }
 }
 
-void turnBack(void) {
-  preOrientation = Inertial.rotation(degrees);
-  targetOrientation = preOrientation + 180.0;
-  while (abs(Inertial.rotation(degrees) - targetOrientation) > 5.0) {
-    MotorFL.spin(directionType::fwd, round((targetOrientation - Inertial.rotation(degrees)) * TURN_K), velocityUnits::pct);
-    MotorBL.spin(directionType::fwd, round((targetOrientation - Inertial.rotation(degrees)) * TURN_K), velocityUnits::pct);
-    MotorFR.spin(directionType::fwd, -round((targetOrientation - Inertial.rotation(degrees)) * TURN_K), velocityUnits::pct);
-    MotorBR.spin(directionType::fwd, -round((targetOrientation - Inertial.rotation(degrees)) * TURN_K), velocityUnits::pct);
-    wait(100, msec);
-  }
-}
-
 int main() {
   // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
   
   Competition.autonomous(autonomous);
   Competition.drivercontrol(usercontrol);
-  Controller1.ButtonDown.pressed(turnBack);
 
   while(1) {
     wait(100, msec);
