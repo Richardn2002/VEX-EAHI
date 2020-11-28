@@ -16,6 +16,9 @@
 // MotorFR              motor         3               
 // MotorBR              motor         4               
 // Inertial             inertial      11              
+// MotorLeftClaw        motor         5               
+// MotorRightClaw       motor         6               
+// MotorUp              motor         7               
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
@@ -87,6 +90,32 @@ void usercontrol(void) {
     MotorBL.spin(directionType::fwd, leftMotorPct, velocityUnits::pct);
     MotorFR.spin(directionType::fwd, rightMotorPct, velocityUnits::pct);
     MotorBR.spin(directionType::fwd, rightMotorPct, velocityUnits::pct);
+
+    if (!(Controller1.ButtonR2.pressing() & Controller1.ButtonL2.pressing())) {
+      if (Controller1.ButtonR2.pressing()) {
+        MotorLeftClaw.spin(directionType::fwd, 100, velocityUnits::pct);
+        MotorRightClaw.spin(directionType::fwd, 100, velocityUnits::pct);
+      }
+      if (Controller1.ButtonL2.pressing()) {
+        MotorLeftClaw.spin(directionType::fwd, -100, velocityUnits::pct);
+        MotorRightClaw.spin(directionType::fwd, -100, velocityUnits::pct);
+      }
+    } else {
+      MotorLeftClaw.spin(directionType::fwd, 0, velocityUnits::pct);
+      MotorRightClaw.spin(directionType::fwd, 0, velocityUnits::pct);
+    }
+
+    if (!(Controller1.ButtonR1.pressing() & Controller1.ButtonL1.pressing())) {
+      if (Controller1.ButtonR1.pressing()) {
+        MotorUp.spin(directionType::fwd, 100, velocityUnits::pct);
+      }
+      if (Controller1.ButtonL1.pressing()) {
+        MotorUp.spin(directionType::fwd, -100, velocityUnits::pct);
+      }
+    } else {
+      MotorUp.spin(directionType::fwd, 0, velocityUnits::pct);
+    }
+
     wait(100, msec);
   }
 }

@@ -9,6 +9,9 @@ extern motor MotorBL;
 extern motor MotorFR;
 extern motor MotorBR;
 extern inertial Inertial;
+extern motor MotorLeftClaw;
+extern motor MotorRightClaw;
+extern motor MotorUp;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.
