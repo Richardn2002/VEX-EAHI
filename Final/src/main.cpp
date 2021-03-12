@@ -30,7 +30,7 @@ competition Competition;
 int32_t leftMotorPct;
 int32_t rightMotorPct;
 int32_t MAX_FORWARD = 80.0;
-double MAX_TURN = 90.0;
+double MAX_TURN = 60.0;
 double TURN_K = 0.7;
 double preOrientation;
 double targetOrientation;
@@ -38,19 +38,42 @@ bool isTurning = false;
 bool isTurningBack = false;
 
 void autonomous(void) {
-  while(1) {
-  }
+  task::sleep(3000);
+  MotorFL.spin(directionType::fwd, 50, velocityUnits::pct);MotorBL.spin(directionType::fwd, 50, velocityUnits::pct);
+  MotorFR.spin(directionType::fwd, 50, velocityUnits::pct);MotorBR.spin(directionType::fwd, 50, velocityUnits::pct);
+  task::sleep(1200);
+  MotorFL.spin(directionType::fwd, 0, velocityUnits::pct);MotorBL.spin(directionType::fwd, 0, velocityUnits::pct);
+  MotorFR.spin(directionType::fwd, 0, velocityUnits::pct);MotorBR.spin(directionType::fwd, 0, velocityUnits::pct);
+  task::sleep(200);
+  MotorFL.spin(directionType::fwd, 50, velocityUnits::pct);MotorBL.spin(directionType::fwd, 50, velocityUnits::pct);
+  MotorFR.spin(directionType::fwd, -50, velocityUnits::pct);MotorBR.spin(directionType::fwd, -50, velocityUnits::pct);
+  task::sleep(900);
+  MotorFL.spin(directionType::fwd, 50, velocityUnits::pct);MotorBL.spin(directionType::fwd, 50, velocityUnits::pct);
+  MotorFR.spin(directionType::fwd, 50, velocityUnits::pct);MotorBR.spin(directionType::fwd, 50, velocityUnits::pct);
+  task::sleep(1400);
+  MotorFL.spin(directionType::fwd, -50, velocityUnits::pct);MotorBL.spin(directionType::fwd, -50, velocityUnits::pct);
+  MotorFR.spin(directionType::fwd, -50, velocityUnits::pct);MotorBR.spin(directionType::fwd, -50, velocityUnits::pct);
+  task::sleep(100);
+  MotorFL.spin(directionType::fwd, 0, velocityUnits::pct);MotorBL.spin(directionType::fwd, 0, velocityUnits::pct);
+  MotorFR.spin(directionType::fwd, 0, velocityUnits::pct);MotorBR.spin(directionType::fwd, 0, velocityUnits::pct);
+  MotorLeftClaw.spin(directionType::fwd, 100, velocityUnits::pct);
+  MotorRightClaw.spin(directionType::fwd, 100, velocityUnits::pct);
+  MotorUp.spin(directionType::fwd, 100, velocityUnits::pct);
+  task::sleep(1500);
+  MotorLeftClaw.spin(directionType::fwd, -100, velocityUnits::pct);
+  MotorRightClaw.spin(directionType::fwd, -100, velocityUnits::pct);
+  MotorUp.spin(directionType::fwd, -100, velocityUnits::pct);
+  task::sleep(1000);
+  MotorLeftClaw.spin(directionType::fwd, 100, velocityUnits::pct);
+  MotorRightClaw.spin(directionType::fwd, 100, velocityUnits::pct);
+  MotorUp.spin(directionType::fwd, 100, velocityUnits::pct);
+  task::sleep(1500);
+  MotorLeftClaw.spin(directionType::fwd, 0, velocityUnits::pct);
+  MotorRightClaw.spin(directionType::fwd, 0, velocityUnits::pct);
+  MotorUp.spin(directionType::fwd, 0, velocityUnits::pct);
 }
 
 void usercontrol(void) {
-  Inertial.calibrate();
-  Brain.Screen.clearLine(4, color::black);
-  Brain.Screen.setCursor(4,0);
-  Brain.Screen.print("Calibrating...");
-  while(Inertial.isCalibrating()){
-  }
-  Brain.Screen.clearLine(4, color::black);
-
   while(1) {
     leftMotorPct = round(Controller1.Axis3.position(percent) * MAX_FORWARD / 100.0);
     rightMotorPct = leftMotorPct;
@@ -122,6 +145,14 @@ int main() {
   // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
   
+  Inertial.calibrate();
+  Brain.Screen.clearLine(4, color::black);
+  Brain.Screen.setCursor(4,0);
+  Brain.Screen.print("Calibrating...");
+  while(Inertial.isCalibrating()){
+  }
+  Brain.Screen.clearLine(4, color::black);
+
   Competition.autonomous(autonomous);
   Competition.drivercontrol(usercontrol);
 
